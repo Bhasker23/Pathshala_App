@@ -20,6 +20,10 @@ public class Course {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	private String courseName;
+	private String discription;
+	private String courseType;
+	private String duration;
+	private String topics;
 	@ManyToMany
 	private Set<Student> stuentList;
 	

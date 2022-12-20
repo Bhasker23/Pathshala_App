@@ -18,10 +18,11 @@ public class Student {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO) 
-	private	int studentId;
+	private	Integer studentId;
 	private	String name;
 	private String gender;
 	private String dob;
+	private String parentName;
 	@OneToMany
 	private List<StudentAddresses> address;
 	@ManyToMany
