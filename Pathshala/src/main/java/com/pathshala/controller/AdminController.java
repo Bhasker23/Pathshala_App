@@ -15,9 +15,12 @@ import com.pathshala.DTO.CourseInputDTO;
 import com.pathshala.DTO.CourseResultDTO;
 import com.pathshala.DTO.LoginCredDTO;
 import com.pathshala.DTO.LoginResultDTO;
+import com.pathshala.DTO.StudentAdmissionInputDTO;
+import com.pathshala.DTO.StudentAdmissionResultDTO;
 import com.pathshala.models.CurrentSession;
 import com.pathshala.services.AdminLoginService;
 import com.pathshala.services.CoursesService;
+import com.pathshala.services.StudentServices;
 
 @RestController
 @RequestMapping("/admin")
@@ -28,6 +31,9 @@ public class AdminController {
 	
 	@Autowired
 	CoursesService coursesService;
+	
+	@Autowired
+	StudentServices stService;
 	
 	
 	@PostMapping("/login")
@@ -40,6 +46,13 @@ public class AdminController {
 	public ResponseEntity<String> adminLogOut(@RequestParam String sessionId){
 	
 		return new ResponseEntity<String> (adminLogin.logOutAdmin(sessionId), HttpStatus.OK);
+	}
+	
+	
+	@PostMapping("/studentaddmission/{sessionId}")
+	public ResponseEntity<StudentAdmissionResultDTO> admitStudent(@RequestBody StudentAdmissionInputDTO stAddmission , @PathVariable String sessionId){
+		
+		return new ResponseEntity<StudentAdmissionResultDTO>(stService.admitStudent(stAddmission, sessionId), HttpStatus.CREATED);
 	}
 	
 	@PostMapping("/uploadcourse/{sessionId}")

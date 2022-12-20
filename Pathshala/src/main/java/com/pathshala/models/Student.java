@@ -17,7 +17,6 @@ import lombok.Data;
 public class Student {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO) 
 	private	Integer studentId;
 	private	String name;
 	private String gender;
