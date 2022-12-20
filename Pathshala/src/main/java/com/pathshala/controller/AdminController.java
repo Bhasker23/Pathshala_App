@@ -4,16 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pathshala.DTO.CourseInputDTO;
+import com.pathshala.DTO.CourseResultDTO;
 import com.pathshala.DTO.LoginCredDTO;
 import com.pathshala.DTO.LoginResultDTO;
 import com.pathshala.models.CurrentSession;
 import com.pathshala.services.AdminLoginService;
+import com.pathshala.services.CoursesService;
 
 @RestController
 @RequestMapping("/admin")
@@ -21,6 +25,9 @@ public class AdminController {
 	
 	@Autowired
 	AdminLoginService adminLogin;
+	
+	@Autowired
+	CoursesService coursesService;
 	
 	
 	@PostMapping("/login")
@@ -33,6 +40,12 @@ public class AdminController {
 	public ResponseEntity<String> adminLogOut(@RequestParam String sessionId){
 	
 		return new ResponseEntity<String> (adminLogin.logOutAdmin(sessionId), HttpStatus.OK);
+	}
+	
+	@PostMapping("/uploadcourse/{sessionId}")
+	public ResponseEntity<CourseResultDTO> uploadCourse(@RequestBody CourseInputDTO course , @PathVariable String sessionId){
+		
+		return new ResponseEntity<CourseResultDTO> (coursesService.uploadCourse(course, sessionId), HttpStatus.CREATED);
 	}
 	
 	

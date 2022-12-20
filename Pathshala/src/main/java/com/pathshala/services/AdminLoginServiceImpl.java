@@ -1,6 +1,5 @@
 package com.pathshala.services;
 
-import javax.swing.tree.AbstractLayoutCache;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,7 +53,7 @@ public class AdminLoginServiceImpl implements AdminLoginService{
 		
 		
 		if(cs.findById(sessionId).isEmpty()) {
-			throw new LoginException(" You have not logged In");
+			throw new LoginException(" You are not logged In");
 		}		
 		
 		cs.deleteById(sessionId);

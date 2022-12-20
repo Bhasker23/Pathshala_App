@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 @Entity
@@ -17,7 +19,6 @@ import lombok.Data;
 public class Course {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	private String courseName;
 	private String discription;
@@ -25,6 +26,7 @@ public class Course {
 	private String duration;
 	private String topics;
 	@ManyToMany
+	@JsonIgnore
 	private Set<Student> stuentList;
 	
 	

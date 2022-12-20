@@ -22,6 +22,18 @@ public class GlobleExceptionHandler {
 
 		return new ResponseEntity<>(exceptionDetails, HttpStatus.BAD_REQUEST);
 		
+	}
+	
+	@ExceptionHandler(CoursesException.class)
+	public ResponseEntity<ExceptionDetails> CourseException(CoursesException ex, WebRequest wr){
+		
+		
+		ExceptionDetails exceptionDetails = new ExceptionDetails();
+		exceptionDetails.setMessage(ex.getMessage());
+		exceptionDetails.setDescription(wr.getDescription(false));
+		exceptionDetails.setLocalDate(LocalDate.now());
+
+		return new ResponseEntity<>(exceptionDetails, HttpStatus.BAD_REQUEST);
 		
 	}
 	
