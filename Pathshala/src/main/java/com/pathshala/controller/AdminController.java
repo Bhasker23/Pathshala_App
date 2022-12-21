@@ -1,9 +1,12 @@
 package com.pathshala.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +21,7 @@ import com.pathshala.DTO.LoginResultDTO;
 import com.pathshala.DTO.StudentAdmissionInputDTO;
 import com.pathshala.DTO.StudentAdmissionResultDTO;
 import com.pathshala.models.CurrentSession;
+import com.pathshala.models.Student;
 import com.pathshala.services.AdminLoginService;
 import com.pathshala.services.CoursesService;
 import com.pathshala.services.StudentServices;
@@ -59,6 +63,13 @@ public class AdminController {
 	public ResponseEntity<CourseResultDTO> uploadCourse(@RequestBody CourseInputDTO course , @PathVariable String sessionId){
 		
 		return new ResponseEntity<CourseResultDTO> (coursesService.uploadCourse(course, sessionId), HttpStatus.CREATED);
+	}
+	
+	@GetMapping("/searchstudent/{sessionId}")
+	public ResponseEntity<List<Student>> findStudentByName(@PathVariable String sessionId, @RequestParam String stName){
+		
+		return new ResponseEntity<List<Student>>(stService.findStudentByName(sessionId, stName),HttpStatus.OK);
+		
 	}
 	
 	

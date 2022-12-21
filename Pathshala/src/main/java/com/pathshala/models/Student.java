@@ -3,6 +3,7 @@ package com.pathshala.models;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,9 +23,9 @@ public class Student {
 	private String gender;
 	private String dob;
 	private String parentName;
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<StudentAddresses> address;
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	private Set<Course> course;
 	
 	

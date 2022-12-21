@@ -2,6 +2,7 @@ package com.pathshala.services;
 
 import javax.persistence.Id;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,15 +36,17 @@ public class CoursesServiceImpl implements CoursesService {
 		if(courseRepo.findById(course.getId()).isPresent()){
 			throw new CoursesException(course.getCourseName()+" course has already been uploaded");
 		}
+//		
+//		Course c = new Course();
+//		c.setId(course.getId());
+//		c.setCourseName(course.getCourseName());
+//		c.setCourseType(course.getCourseType());
+//		c.setDiscription(course.getDiscription());
+//		c.setDuration(course.getDuration());
+//		c.setTopics(course.getTopics());
 		
-		Course c = new Course();
-		c.setId(course.getId());
-		c.setCourseName(course.getCourseName());
-		c.setCourseType(course.getCourseType());
-		c.setDiscription(course.getDiscription());
-		c.setDuration(course.getDuration());
-		c.setTopics(course.getTopics());
-		
+		ModelMapper mapper = new ModelMapper();
+		Course c = mapper.map(course, Course.class);
 		courseRepo.save(c);
 		
 		CourseResultDTO cResultDTO = new CourseResultDTO();

@@ -13,5 +13,5 @@ public class StudentAdmissionInputDTO {
 	private String gender;
 	private String dob;
 	private String parentName;
-//	private List<StudentAddresses> address;
+	private List<StudentAddresses> address;
 }
