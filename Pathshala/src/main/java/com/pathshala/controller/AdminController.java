@@ -1,5 +1,6 @@
 package com.pathshala.controller;
 
+import java.security.PublicKey;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import com.pathshala.DTO.LoginCredDTO;
 import com.pathshala.DTO.LoginResultDTO;
 import com.pathshala.DTO.StudentAdmissionInputDTO;
 import com.pathshala.DTO.StudentAdmissionResultDTO;
+import com.pathshala.DTO.StudentResDto;
 import com.pathshala.models.CurrentSession;
 import com.pathshala.models.Student;
 import com.pathshala.services.AdminLoginService;
@@ -79,6 +81,12 @@ public class AdminController {
 		return new ResponseEntity<String>(stService.assignCourse(sessionId, courseId, stId),HttpStatus.CREATED);
 	}
 	
+	@GetMapping("/getAllStudentsOfACourse/{sessionId}/{cid}")
+	public ResponseEntity<List<StudentResDto>> getAllStudentOfACourse(@PathVariable String sessionId,@PathVariable Integer cid){
+		
+		return new ResponseEntity<List<StudentResDto>>(adminLogin.getAllStudentOfACourse(sessionId, cid), HttpStatus.OK);
+		
+	}
 	
 	
 }

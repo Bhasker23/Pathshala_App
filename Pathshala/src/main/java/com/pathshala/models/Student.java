@@ -25,8 +25,8 @@ public class Student {
 	private String parentName;
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<StudentAddresses> address;
-	@ManyToMany(cascade = CascadeType.ALL)
-	private Set<Course> course;
+	@ManyToMany(cascade = CascadeType.PERSIST)
+	private List<Course> course;
 	
 	
 }

@@ -10,8 +10,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pathshala.DTO.AssignedCourseDTO;
 import com.pathshala.DTO.StudentAdmissionInputDTO;
 import com.pathshala.DTO.StudentAdmissionResultDTO;
+import com.pathshala.DTO.StudentProfileUpdateInputDTO;
+import com.pathshala.DTO.StudentProfileUpdateResultDTO;
 import com.pathshala.GlobalExceptionHandler.CoursesException;
 import com.pathshala.GlobalExceptionHandler.LoginException;
 import com.pathshala.GlobalExceptionHandler.StudentException;
@@ -106,15 +109,13 @@ public class StudentServicesImpl implements StudentServices {
 		}
 		
 		
-		Set<Course> stCourses = new HashSet<>();
-		stCourses.add(courseRepo.findById(courseId).get());
-	    stRepo.findById(stId).get().setCourse(stCourses);
-	    
-	    
-	    Set<Student> stStudent = new HashSet<>();
-	    stStudent.add(stRepo.findById(stId).get());
-	    courseRepo.findById(courseId).get().setStuentList(stStudent);
-	    
+		Student st = stRepo.findById(stId).get();
+		Course c = courseRepo.findById(courseId).get();
+		c.getStuentList().add(st);
+		st.getCourse().add(courseRepo.findById(courseId).get());
+		
+		stRepo.save(st);
+		
 	    
 //		ModelMapper mapper = new ModelMapper();
 //		Student st = mapper.map(stCourses, Student.class);
@@ -123,6 +124,82 @@ public class StudentServicesImpl implements StudentServices {
 		
 		return stRepo.findById(stId).get().getName() + " has alloted " 
 					+ courseRepo.findById(courseId).get().getCourseName()+ " Course.";
+	}
+
+
+	@Override
+	public StudentProfileUpdateResultDTO updateProfile(Integer stCode, StudentProfileUpdateInputDTO stInput) {
+		
+		if(stRepo.findById(stCode).isEmpty()) {
+			throw new StudentException(stCode + "student code is not availble in Pathshala");
+		}
+		
+		if(stRepo.findById(stCode).isPresent()) {
+			
+//			Student st = stRepo.findById(stCode).get();
+//			st.setName(stInput.getName());
+			
+			ModelMapper mapper = new ModelMapper();
+			Student st = mapper.map(stInput, Student.class);
+			st.setStudentId(stCode);
+			
+			stRepo.save(st);
+			
+			
+		}
+		
+		
+		StudentProfileUpdateResultDTO stResult = new StudentProfileUpdateResultDTO();
+		stResult.setMessage("Your Profile has been Updated");
+		
+		return stResult;
+	}
+
+
+	@Override
+	public List<AssignedCourseDTO> getAllAssignedCourseDetails(Integer stid) {
+		
+		Optional<Student> st =  stRepo.findById(stid);
+		
+		if(stRepo.findById(stid).isEmpty()) {
+			throw new StudentException(stid + "student code is not availble in Pathshala");
+		}
+			ModelMapper modelMapper = new ModelMapper();
+			List<Course> courses = st.get().getCourse();
+			
+			List<AssignedCourseDTO> courseDTOs = new ArrayList<>();
+			
+			for(Course course:courses) {
+				courseDTOs.add(modelMapper.map(course,AssignedCourseDTO.class));
+			}
+		
+		return courseDTOs;
+	}
+
+
+	@Override
+	public String leaveCourse(Integer stid,Integer cid) {
+		
+      Optional<Student> st =  stRepo.findById(stid);
+		
+		if(stRepo.findById(stid).isEmpty()) {
+			throw new StudentException(stid + "student code is not availble in Pathshala");
+		}
+		
+		
+		Optional<Course> course  = courseRepo.findById(cid);
+		
+		if(course.isEmpty()) {
+			throw new CoursesException( cid + "is not available in Pathshala yet");
+		}
+		
+		course.get().getStuentList().remove(st.get());
+		st.get().getCourse().remove(course.get());
+		
+		stRepo.save(st.get());
+		
+		return " Succesfully Exit From "+course.get().getCourseName() +" course";
+		
 	}
 
 }

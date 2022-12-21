@@ -1,14 +1,24 @@
 package com.pathshala.services;
 
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pathshala.DTO.LoginCredDTO;
 import com.pathshala.DTO.LoginResultDTO;
+import com.pathshala.DTO.StudentResDto;
+import com.pathshala.GlobalExceptionHandler.CoursesException;
 import com.pathshala.GlobalExceptionHandler.LoginException;
+import com.pathshala.models.Course;
 import com.pathshala.models.CurrentSession;
+import com.pathshala.models.Student;
 import com.pathshala.repo.AdminRepo;
+import com.pathshala.repo.CourseRepo;
 import com.pathshala.repo.CurrentSessionRepo;
 
 import net.bytebuddy.utility.RandomString;
@@ -21,6 +31,9 @@ public class AdminLoginServiceImpl implements AdminLoginService{
 	
 	@Autowired
 	CurrentSessionRepo cs;
+	
+	@Autowired
+	CourseRepo cRepo;
 	
 	@Override
 	public LoginResultDTO loginAdmin(LoginCredDTO loginCred) {
@@ -59,6 +72,30 @@ public class AdminLoginServiceImpl implements AdminLoginService{
 		cs.deleteById(sessionId);
 		
 		return "logged out Successfully";
+	}
+
+	@Override
+	public List<StudentResDto> getAllStudentOfACourse(String sessionid, Integer cid) {
+	
+		if(cs.findById(sessionid).isEmpty()) {
+			throw new LoginException(" You are not logged In");
+		}
+		
+       Optional<Course> course  = cRepo.findById(cid);
+		
+		if(course.isEmpty()) {
+			throw new CoursesException( cid + "is not available in Pathshala yet");
+		}
+		
+		ModelMapper modelmapper = new ModelMapper();
+		List<Student> students  = course.get().getStuentList();
+		List<StudentResDto> studentResDtos  = new ArrayList<>();
+		
+		for(Student student: students) {
+			studentResDtos.add(modelmapper.map(student,StudentResDto.class));
+		}
+		
+		return studentResDtos;
 	}
 
 }

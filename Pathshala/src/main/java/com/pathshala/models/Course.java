@@ -2,6 +2,7 @@ package com.pathshala.models;
 
 
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -26,9 +27,9 @@ public class Course {
 	private String courseType;
 	private String duration;
 	private String topics;
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.PERSIST)
 	@JsonIgnore
-	private Set<Student> stuentList;
+	private List<Student> stuentList;
 	
 	
 }
