@@ -26,7 +26,7 @@ public class Course {
 	private String courseType;
 	private String duration;
 	private String topics;
-	@ManyToMany(cascade = CascadeType.PERSIST)
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<Student> stuentList;
 	

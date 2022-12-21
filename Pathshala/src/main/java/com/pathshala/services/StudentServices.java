@@ -14,4 +14,6 @@ public interface StudentServices {
 	public StudentAdmissionResultDTO admitStudent(StudentAdmissionInputDTO stAdmit, String sessionId);
 	
 	public List<Student> findStudentByName(String sessionId, String stName);
+	
+	public String assignCourse(String sessionId, Integer courseId, Integer stId);
 }

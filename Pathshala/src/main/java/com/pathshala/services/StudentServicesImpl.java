@@ -1,8 +1,10 @@
 package com.pathshala.services;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +12,12 @@ import org.springframework.stereotype.Service;
 
 import com.pathshala.DTO.StudentAdmissionInputDTO;
 import com.pathshala.DTO.StudentAdmissionResultDTO;
+import com.pathshala.GlobalExceptionHandler.CoursesException;
 import com.pathshala.GlobalExceptionHandler.LoginException;
 import com.pathshala.GlobalExceptionHandler.StudentException;
+import com.pathshala.models.Course;
 import com.pathshala.models.Student;
+import com.pathshala.repo.CourseRepo;
 import com.pathshala.repo.CurrentSessionRepo;
 import com.pathshala.repo.StudentRepo;
 
@@ -24,6 +29,9 @@ public class StudentServicesImpl implements StudentServices {
 	
 	@Autowired
 	StudentRepo stRepo;
+	
+	@Autowired
+	CourseRepo courseRepo;
 	
 	
 	@Override
@@ -65,19 +73,56 @@ public class StudentServicesImpl implements StudentServices {
 	@Override
 	public List<Student> findStudentByName(String sessionId, String stName) {
 		
+		List<Student> list = new ArrayList<>();
+		list = stRepo.findByName(stName);
+		
 		if(cRepo.findById(sessionId).isEmpty()) {
 			throw new LoginException("Admin is not logged In , Please Login First !");
 		}
 		
-		if (!stRepo.findByName(stName).contains(stName)) {
-			throw new StudentException(stName + " is not taken addmission yet in Pathshala");
+		if(list.isEmpty()) {
+			throw new StudentException( stName + " is not taken addmission yet in pathshala. ");
 		}
-//		
-//		List<Student> list = new ArrayList<>(); 
-//		Student st = 
-//		list.add(st);
 		
-		return stRepo.findByName(stName);
+		
+		
+		return list;
+	}
+
+
+	@Override
+	public String assignCourse(String sessionId, Integer courseId, Integer stId) {
+		
+		if(cRepo.findById(sessionId).isEmpty()) {
+			throw new LoginException("Admin is not logged In , Please Login First !");
+		}
+		
+		if(stRepo.findById(stId).isEmpty()) {
+			throw new StudentException(stId + "student code is not availble in Pathshala");
+		}
+		
+		if(courseRepo.findById(courseId).isEmpty()) {
+			throw new CoursesException( courseId + "is not available in Pathshala yet");
+		}
+		
+		
+		Set<Course> stCourses = new HashSet<>();
+		stCourses.add(courseRepo.findById(courseId).get());
+	    stRepo.findById(stId).get().setCourse(stCourses);
+	    
+	    
+	    Set<Student> stStudent = new HashSet<>();
+	    stStudent.add(stRepo.findById(stId).get());
+	    courseRepo.findById(courseId).get().setStuentList(stStudent);
+	    
+	    
+//		ModelMapper mapper = new ModelMapper();
+//		Student st = mapper.map(stCourses, Student.class);
+		
+//        stRepo.save(st);		
+		
+		return stRepo.findById(stId).get().getName() + " has alloted " 
+					+ courseRepo.findById(courseId).get().getCourseName()+ " Course.";
 	}
 
 }
